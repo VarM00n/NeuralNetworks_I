@@ -1,5 +1,8 @@
 import math
 
+# https://towardsdatascience.com/inroduction-to-neural-networks-in-python-7e0b422e6c24
+# https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/
+
 
 # Neural Network
 class Perceptron:
@@ -17,7 +20,8 @@ class Perceptron:
                        [1, 0, 1],
                        [1, 0, 0]]
     training_outputs = [0, 0, 1, 1]
-    weights = [0.5, 0.5, 0.5]
+
+    input_weights = [0.5, 0.5, 0.5]
 
 
 # Training network
@@ -31,7 +35,7 @@ for i in range(0, 10000):
 
         sum_to_check = 0
         for k in range(0, len(training_input)):
-            sum_to_check += training_input[k] * perceptron.weights[k]
+            sum_to_check += training_input[k] * perceptron.input_weights[k]
 
         output = perceptron.sigmoid_function(sum_to_check)
 
@@ -40,9 +44,11 @@ for i in range(0, 10000):
         adjustment = error * perceptron.sigmoid_derivative(output)
 
         for k in range(0, len(training_input)):
-            perceptron.weights[k] += training_input[k] * adjustment
+            perceptron.input_weights[k] += training_input[k] * adjustment
 
 print("Network trained")
+
+# Input
 
 first_input = input()
 second_input = input()
@@ -51,7 +57,7 @@ user_input = [first_input, second_input, third_input]
 
 sum_to_check1 = 0
 for i in range(0, len(user_input)):
-    sum_to_check1 += float(user_input[i]) * perceptron.weights[i]
+    sum_to_check1 += float(user_input[i]) * perceptron.input_weights[i]
 
 user_output = perceptron.sigmoid_function(sum_to_check1)
 print(user_output)
