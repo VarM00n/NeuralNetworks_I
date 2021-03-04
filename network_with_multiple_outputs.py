@@ -37,21 +37,21 @@ class Perceptron:
                        [0, 0, 0, 0]]
 
     training_outputs = [[0, 0],
-                        [0, 1],
-                        [0, 0],
-                        [0, 0],
-                        [1, 0],
-                        [0, 0],
-                        [0, 0],
                         [0, 0],
                         [0, 0],
                         [0, 0],
                         [1, 0],
                         [0, 0],
                         [0, 0],
+                        [1, 0],
                         [0, 0],
+                        [1, 0],
+                        [1, 0],
+                        [1, 0],
+                        [1, 0],
+                        [1, 0],
                         [0, 0],
-                        [0, 0]]
+                        [1, 0]]
 
     input_weights = [0.5, 0.5, 0.5, 0.5,
                      0.5, 0.5, 0.5, 0.5,
@@ -64,7 +64,7 @@ class Perceptron:
 perceptron = Perceptron()
 
 for z in range(0, 15000):
-    for i in range(0, 10):
+    for i in range(0, 16):
         hidden_layer_values = []
         output_layer_values = []
         sigma_for_output = []
@@ -115,6 +115,7 @@ for z in range(0, 15000):
                 perceptron.input_weights[m + k * perceptron.amount_of_inputs] += \
                     sigma_for_hl[k] * perceptron.sigmoid_derivative(hidden_layer_values[k]) * \
                     perceptron.training_inputs[i][m]
+
         # output layer
         for k in range(perceptron.amount_of_outputs):
             for m in range(perceptron.amount_of_neurons_in_hl):
