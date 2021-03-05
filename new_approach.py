@@ -29,51 +29,25 @@ class NeuralNetwork:
     #   2nd layer - 5 neurons
     #   3rd layer - 4 neurons
     # !!! Important: There has to be at least 2 layers (input, output) with at least one neuron each (perceptron)
-    neurons_in_each_layer = [4, 3, 2]
+    neurons_in_each_layer = [4, 2]
 
     # attributes
     weights = []
     neurons = []
 
-    training_inputs = [[1, 1, 1, 1],
-                       [1, 1, 1, 0],
-                       [1, 1, 0, 1],
-                       [1, 0, 1, 1],
-                       [0, 1, 1, 1],
-                       [1, 1, 0, 0],
-                       [1, 0, 1, 0],
-                       [0, 1, 1, 0],
-                       [1, 0, 0, 1],
-                       [0, 1, 0, 1],
-                       [0, 0, 1, 1],
-                       [0, 0, 0, 1],
-                       [0, 0, 1, 0],
-                       [0, 1, 0, 0],
-                       [1, 0, 0, 0],
-                       [0, 0, 0, 0]]
+    training_inputs = [[1, 1, 1, 1], [1, 1, 1, 0], [1, 1, 0, 1], [1, 0, 1, 1], [0, 1, 1, 1], [1, 1, 0, 0],
+                       [1, 0, 1, 0], [0, 1, 1, 0], [1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1], [0, 0, 0, 1],
+                       [0, 0, 1, 0], [0, 1, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]]
 
-    training_outputs = [[0, 0],
-                        [0, 0],
-                        [0, 0],
-                        [0, 0],
-                        [1, 0],
-                        [0, 0],
-                        [0, 0],
-                        [1, 0],
-                        [0, 0],
-                        [1, 0],
-                        [1, 0],
-                        [1, 0],
-                        [1, 0],
-                        [1, 0],
-                        [0, 0],
-                        [1, 0]]
+    training_outputs = [[0, 0], [0, 1], [0, 0], [0, 0], [1, 0], [0, 1],
+                        [0, 1], [1, 1], [0, 0], [1, 0], [1, 0], [1, 0],
+                        [1, 1], [1, 1], [0, 1], [1, 1]]
 
     # constructor
-    # def __init__(self):
-    #     self.generating_neurons()
-    #     self.generating_weights()
-    #     self.training_network()
+    def __init__(self):
+        self.generating_neurons()
+        self.generating_weights()
+        self.training_network()
 
     def generating_neurons(self):
         i = 0
@@ -94,47 +68,59 @@ class NeuralNetwork:
     def training_network(self):
         for epoch in range(0, 10000):
             for training_input in range(len(self.training_inputs)):
-                total_error = []
+
                 # FORWARD PROPAGATION
+
                 # assigning values from training input into neuron table
-                for i in range(len(self.training_inputs[training_input])):
-                    self.neurons[0][i][0] = self.training_inputs[training_input][i]
+                self.assigning_training_values_to_network(training_input)
+
                 # calculating total net input, squashing it using an activation function
                 #   result is being saved into first value of neuron table
-                for layer in range(1, len(self.neurons_in_each_layer)):
-                    for neuron in range(len(self.neurons[layer])):
-                        net_input = 0
-                        for prev_neuron in range(0, len(self.neurons[layer - 1])):
-                            net_input += self.neurons[layer - 1][prev_neuron][0] * \
-                                         self.weights[layer - 1][neuron][prev_neuron]
-                        self.neurons[layer][neuron][0] = sigmoid_function(net_input)
+                self.forward_propagation()
+
                 # backpropagation and weight changes
                 # accessing every single weight in network
-                for layer in range(len(self.weights) - 1, -1, -1):
-                    for weight_group in range(0, len(self.weights[layer])):
-                        for single_weight in range(0, len(self.weights[layer][weight_group])):
-                            # for last layer only
-                            out = self.neurons[layer + 1][weight_group][0]
-                            out_net = out * (1 - out)
-                            if layer == len(self.weights) - 1:
-                                total_out = - (self.training_outputs[training_input][weight_group] - out)
-                                net_w = self.neurons[layer][single_weight][0]
-                                self.neurons[layer+1][weight_group][1] = total_out * out_net
-                                self.weights[layer][weight_group][single_weight] -= total_out * out_net * net_w
-                            # for every other layer
-                            else:
-                                total_out = 0
-                                for k in range(0, len(self.neurons[layer+2])):
-                                    total_out += self.neurons[layer+2][k][1]
-                                net_w = self.neurons[layer][single_weight][0]
-                                self.neurons[layer + 1][weight_group][1] = total_out * out_net
-                                self.weights[layer][weight_group][single_weight] -= total_out * out_net * net_w
+                self.backpropagation(training_input)
+
+    def assigning_training_values_to_network(self, training_input):
+        for i in range(len(self.training_inputs[training_input])):
+            self.neurons[0][i][0] = self.training_inputs[training_input][i]
+
+    def forward_propagation(self):
+        for layer in range(1, len(self.neurons_in_each_layer)):
+            for neuron in range(len(self.neurons[layer])):
+                net_input = 0
+                for prev_neuron in range(0, len(self.neurons[layer - 1])):
+                    net_input += self.neurons[layer - 1][prev_neuron][0] * \
+                                 self.weights[layer - 1][neuron][prev_neuron]
+                self.neurons[layer][neuron][0] = sigmoid_function(net_input)
+
+    def backpropagation(self, training_input):
+        for layer in range(len(self.weights) - 1, -1, -1):
+            for weight_group in range(0, len(self.weights[layer])):
+                for single_weight in range(0, len(self.weights[layer][weight_group])):
+                    # for last layer only
+                    out = self.neurons[layer + 1][weight_group][0]
+                    out_net = out * (1 - out)
+                    if layer == len(self.weights) - 1:
+                        total_out = - (self.training_outputs[training_input][weight_group] - out)
+                        net_w = self.neurons[layer][single_weight][0]
+                        self.neurons[layer + 1][weight_group][1] = total_out * out_net
+                        self.weights[layer][weight_group][single_weight] -= total_out * out_net * net_w
+                    # for every other layer
+                    else:
+                        total_out = 0
+                        for k in range(0, len(self.neurons[layer + 2])):
+                            total_out += self.neurons[layer + 2][k][1]
+                        net_w = self.neurons[layer][single_weight][0]
+                        self.neurons[layer + 1][weight_group][1] = total_out * out_net
+                        self.weights[layer][weight_group][single_weight] -= total_out * out_net * net_w
 
 
 nn = NeuralNetwork()
-nn.generating_neurons()
-nn.generating_weights()
-nn.training_network()
+# nn.generating_neurons()
+# nn.generating_weights()
+# nn.training_network()
 print("Job done")
 first_input = input()
 second_input = input()
@@ -153,5 +139,6 @@ for layer in range(1, len(nn.neurons_in_each_layer)):
             net_input += float(nn.neurons[layer - 1][prev_neuron][0]) * \
                          nn.weights[layer - 1][neuron][prev_neuron]
         nn.neurons[layer][neuron][0] = sigmoid_function(net_input)
-print(nn.neurons[2][0][0])
-print(nn.neurons[2][1][0])
+
+print(nn.neurons[1][0][0])
+print(nn.neurons[1][1][0])
