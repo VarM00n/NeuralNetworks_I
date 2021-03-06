@@ -120,9 +120,6 @@ class NeuralNetwork:
 
 
 nn = NeuralNetwork()
-# nn.generating_neurons()
-# nn.generating_weights()
-# nn.training_network()
 print("Job done")
 while True:
     first_input = input()
