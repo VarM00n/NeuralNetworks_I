@@ -1,6 +1,8 @@
 import math
 import random
 
+import file_loading
+
 
 # W lewo i w góre - zwrost wiązania metalicznego
 # W prawo i w dół - zwrost wiązania niemetalicznego
@@ -29,20 +31,32 @@ class NeuralNetwork:
     #   2nd layer - 5 neurons
     #   3rd layer - 4 neurons
     # !!! Important: There has to be at least 2 layers (input, output) with at least one neuron each (perceptron)
-    neurons_in_each_layer = [2, 4, 1]
+    neurons_in_each_layer = [25, 10, 1]
 
     # attributes
     weights = []
     neurons = []
 
-    training_inputs = [[1, 1],
-                       [1, 0],
-                       [0, 1],
-                       [0, 0]]
+    training_inputs = [[0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0],
+                       [1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
+                       [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
+                       [0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0],
+                       [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0],
+                       [1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0],
+
+]
 
     training_outputs = [[0],
                         [1],
-                        [1],
+                        [0],
+                        [0],
+                        [0],
+                        [0],
+                        [0],
+                        [0],
                         [0]]
 
     # constructor
@@ -68,7 +82,7 @@ class NeuralNetwork:
                     self.weights[layer][i].append(round_float(random.uniform(0, 1), 2))
 
     def training_network(self):
-        for epoch in range(0, 25000):
+        for epoch in range(0, 5000):
             for training_input in range(len(self.training_inputs)):
 
                 # FORWARD PROPAGATION
@@ -121,24 +135,23 @@ class NeuralNetwork:
 
 nn = NeuralNetwork()
 print("Job done")
-while True:
-    first_input = input()
-    second_input = input()
-    # third_input = input()
-    # fourth_input = input()
+# first_input = input()
+# second_input = input()
+# third_input = input()
+# fourth_input = input()
+# bitmaps = file_loading.bitmap_of_image("C://Users/VarMoon/PycharmProjects/NeuralNetworks3x3/letters_5x5/test_3.png")
+bitmaps = [1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]
+for i in range(0, 25):
+    nn.neurons[0][i][0] = bitmaps[i]
 
-    nn.neurons[0][0][0] = first_input
-    nn.neurons[0][1][0] = second_input
-    # nn.neurons[0][2][0] = third_input
-    # nn.neurons[0][3][0] = fourth_input
 
-    for layer in range(1, len(nn.neurons_in_each_layer)):
-        for neuron in range(len(nn.neurons[layer])):
-            net_input = 0
-            for prev_neuron in range(0, len(nn.neurons[layer - 1])):
-                net_input += float(nn.neurons[layer - 1][prev_neuron][0]) * \
-                             nn.weights[layer - 1][neuron][prev_neuron]
-            nn.neurons[layer][neuron][0] = sigmoid_function(net_input)
+for layer in range(1, len(nn.neurons_in_each_layer)):
+    for neuron in range(len(nn.neurons[layer])):
+        net_input = 0
+        for prev_neuron in range(0, len(nn.neurons[layer - 1])):
+            net_input += float(nn.neurons[layer - 1][prev_neuron][0]) * \
+                            nn.weights[layer - 1][neuron][prev_neuron]
+        nn.neurons[layer][neuron][0] = sigmoid_function(net_input)
 
-    print(nn.neurons[2][0][0])
-    # print(nn.neurons[2][1][0])
+print(nn.neurons[2][0][0])
+# print(nn.neurons[2][1][0])
