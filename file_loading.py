@@ -1,5 +1,5 @@
 from PIL import Image, ImageEnhance
-
+import csv
 file = "C://Users/VarMoon/PycharmProjects/NeuralNetworks3x3/letters_5x5/test_4.png"
 
 
@@ -52,5 +52,24 @@ def bitmap_of_image(image_root):
     return img_bin
 
 
-bitmaps = bitmap_of_image(file)
-print("yeey")
+def get_line():
+    training_outputs = []
+    training_outputs.append([])
+    with open('train.csv', 'r') as read_obj:
+        csv_reader = csv.reader(read_obj)
+        count = 0
+        temp = 0
+        for row in csv_reader:
+            training_outputs[0] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            if temp != 0:
+                for i in range(0, 10):
+                    if int(row[0]) == i:
+                        training_outputs[0][i] = 1
+                # print(training_outputs[0])
+                count += 1
+                if count == 100:
+                    break
+            temp += 1
+
+
+get_line()
